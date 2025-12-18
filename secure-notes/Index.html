@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DOM XSS Lab</title>
+</head>
+<body>
+  <h2>Search</h2>
+  <div id="output"></div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+
+    if (q) {
+      document.getElementById("output").innerHTML =
+        "You searched for: " + q;
+    }
+    const express = require("express");
+const sqlite3 = require("sqlite3").verbose();
+const app = express();
+
+const db = new sqlite3.Database(":memory:");
+
+db.serialize(() => {
+  db.run("CREATE TABLE users (username TEXT, password TEXT)");
+  db.run("INSERT INTO users VALUES ('admin','secret123')");
+});
+
+app.get("/login", (req, res) => {
+  const user = req.query.user;
+  const pass = req.query.pass;
+
+  const query =
+    "SELECT * FROM users WHERE username = '" +
+    user +
+    "' AND password = '" +
+    pass +
+    "'";
+
+  db.get(query, (err, row) => {
+    if (row) res.send("Welcome");
+    else res.send("Invalid credentials");
+  });
+});
+
+app.listen(3000);
+
+  </script>
+</body>
+</html>
